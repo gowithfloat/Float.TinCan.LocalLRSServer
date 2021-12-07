@@ -21,7 +21,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Float.TinCan" Version="1.0.3.22" />
+    <PackageReference Include="Float.TinCan" Version="1.0.3.28" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Float.TinCan.LocalLRSServer\Float.TinCan.LocalLRSServer.csproj" />

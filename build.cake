@@ -15,7 +15,7 @@ using System;
 // Parameters and arguments
 
 readonly string task = Argument("task", "Build");
-readonly string projectName = Argument("projectName", "Float.TinCan.LRSServer");
+readonly string projectName = Argument("projectName", "Float.TinCan.LocalLRSServer");
 readonly string configuration = Argument("configuration", "Debug");
 readonly Uri nugetUrl = Argument<Uri>("nugetUrl", null);
 readonly string nugetToken = Argument("nugetToken", string.Empty);
