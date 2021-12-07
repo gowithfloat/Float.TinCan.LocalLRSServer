@@ -1,26 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackOnBuild>true</PackOnBuild>
-    <PackageId>Float.TinCan.LocalLRSServer</PackageId>
-    <Authors>Float</Authors>
-    <Owners>Float</Owners>
-    <PackageProjectUrl>https://www.gowithfloat.com</PackageProjectUrl>
-    <Summary>A local LRS server for xAPI.</Summary>
-    <Title>Float.TinCan.LocalLRSServer</Title>
-    <Description>A local LRS server for xAPI.</Description>
+    <AssemblyName>Float.TinCan.LocalLRSServer</AssemblyName>
+    <AssemblyAuthor>Float</AssemblyAuthor>
+    <AssemblyDescription>A local LRS server for xAPI.</AssemblyDescription>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <CodeAnalysisRuleSet>$(SolutionDir)\stylecop.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <PackageId>$(AssemblyName)</PackageId>
+    <Title>$(AssemblyName)</Title>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <AdditionalFiles Include="../stylecop.json" />
+    <AdditionalFiles Include="$(SolutionDir)\stylecop.json" />
   </ItemGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>../stylecop.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DocumentationFile>bin\Debug\netstandard2.0\Float.TinCan.LocalLRSServer.xml</DocumentationFile>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' " />
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PackageDescription>$(AssemblyDescription)</PackageDescription>
+    <Summary>$(AssemblyDescription)</Summary>
+    <Description>$(AssemblyDescription)</Description>
+    <Authors>$(AssemblyAuthor)</Authors>
+    <Owners>$(AssemblyAuthor)</Owners>
+    <PackOnBuild>true</PackOnBuild>
+    <Deterministic>true</Deterministic>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Float.TinCan" Version="1.0.3.22" />
+    <PackageReference Include="Float.TinCan" Version="1.0.3.28" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
