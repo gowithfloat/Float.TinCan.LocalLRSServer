@@ -1,4 +1,4 @@
-## Float.TinCan.LRSServer [![Test](https://github.com/gowithfloat/Float.TinCan.LRSServer/actions/workflows/test.yml/badge.svg)](https://github.com/gowithfloat/Float.TinCan.LRSServer/actions/workflows/test.yml) [![NuGet](https://img.shields.io/nuget/v/Float.TinCan.LRSServer)](https://www.nuget.org/packages/Float.TinCan.LRSServer/)
+## Float.TinCan.LocalLRSServer [![Test](https://github.com/gowithfloat/Float.TinCan.LocalLRSServer/actions/workflows/test.yml/badge.svg)](https://github.com/gowithfloat/Float.TinCan.LocalLRSServer/actions/workflows/test.yml) [![NuGet](https://img.shields.io/nuget/v/Float.TinCan.LocalLRSServer)](https://www.nuget.org/packages/Float.TinCan.LocalLRSServer/)
 
 This is a collection of common utilities used by Float projects.
 
