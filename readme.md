@@ -1,6 +1,6 @@
 ## Float.TinCan.LocalLRSServer [![Test](https://github.com/gowithfloat/Float.TinCan.LocalLRSServer/actions/workflows/test.yml/badge.svg)](https://github.com/gowithfloat/Float.TinCan.LocalLRSServer/actions/workflows/test.yml) [![NuGet](https://img.shields.io/nuget/v/Float.TinCan.LocalLRSServer)](https://www.nuget.org/packages/Float.TinCan.LocalLRSServer/)
 
-This is a collection of common utilities used by Float projects.
+A local LRS server for xAPI.
 
 ## Building
 
@@ -12,7 +12,7 @@ There are a number of optional arguments that can be provided to the bootstrappe
 
     ./build.sh \
         --task=Build \
-        --projectName=Float.Core \
+        --projectName=Float.TinCan.LocalLRSServer \
         --configuration=Debug \
         --nugetUrl=https://nuget.org \
         --nugetToken=####
