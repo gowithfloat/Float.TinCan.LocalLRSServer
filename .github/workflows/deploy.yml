@@ -1,20 +1,31 @@
 name: Deploy
 
 on:
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: actions/setup-dotnet@v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: |
+            3.1.x
+            6.0.x
+            7.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build ./Float.Tincan.LocalLRSServer/Float.TinCan.LocalLRSServer.csproj -c Release /p:Version=${{ github.event.release.name }} /p:AssemblyVersion=${{ github.event.release.name }}      
+      - name: Pack and Upload
+        run: dotnet pack --configuration Release --no-restore
       - name: Deploy to NuGet
         env:
           FLOAT_NUGET_TOKEN: ${{ secrets.FLOAT_NUGET_TOKEN }}
-        run: ./build.sh --task=Deploy --configuration=Release --nugetUrl="https://api.nuget.org/v3/index.json" --nugetToken="${FLOAT_NUGET_TOKEN}"
+        run: dotnet nuget push ./Float.TinCan.LocalLRSServer/bin/Release/Float.TinCan.LocalLRSServer.${{ github.event.release.name }}.nupkg --api-key "${FLOAT_NUGET_TOKEN}" --source https://api.nuget.org/v3/index.json
