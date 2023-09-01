@@ -27,10 +27,8 @@ jobs:
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal --logger:"trx;"
     - name: Publish Test Results
-      uses: dorny/test-reporter@v1
+      uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        name: Test Results
-        path: "**/*.trx"
-        reporter: dotnet-trx
-        fail-on-error: true
+        files: |
+          **/TestResults/*.trx
