@@ -21,8 +21,10 @@ jobs:
             7.0.x
       - name: Restore dependencies
         run: dotnet restore
-      - name: Build and Set Assembly Version
-        run: ./build.sh --task=Build --configuration=Release
+      - name: Set Assembly Version
+        run: ./build.sh --task=GitVersion --configuration=Release
+      - name: Build Library
+        run: dotnet build --configuration Release --no-restore
       - name: Update Version
         run: sed -i "s/<Version><\/Version>/<Version>${{ github.event.release.name }}<\/Version>/" ./Float.TinCan.LocalLRSServer/Float.TinCan.LocalLRSServer.csproj
       - name: Pack and Upload

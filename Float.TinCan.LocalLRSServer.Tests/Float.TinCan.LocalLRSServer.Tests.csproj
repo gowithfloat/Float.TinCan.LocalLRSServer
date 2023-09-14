@@ -36,7 +36,7 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
     <PackageReference Include="NunitXml.TestLogger" Version="3.0.117" />
-    <PackageReference Include="Float.TinCan" Version="1.0.3.29" />
+    <PackageReference Include="Float.TinCan" Version="1.0.3.30" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Float.TinCan.LocalLRSServer\Float.TinCan.LocalLRSServer.csproj" />
