@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Float.TinCan.LocalLRSServer.Tests
 {
-    public class TestAgentProfile
+    public sealed class TestAgentProfile: IDisposable
     {
         class StubServerDelegate : ILRSServerDelegate
         {
@@ -136,5 +136,7 @@ namespace Float.TinCan.LocalLRSServer.Tests
         {
             localLRS.Close();
         }
+
+        public void Dispose() => localLRS.Dispose();
     }
 }
