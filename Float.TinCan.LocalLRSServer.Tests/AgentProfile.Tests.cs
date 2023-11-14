@@ -93,7 +93,9 @@ namespace Float.TinCan.LocalLRSServer.Tests
             // does not decode mbox so
             // we cannot test for agent equality
             Assert.NotNull(document.agent);
+            Assert.True(document.agent.account.name == "Example.com");
             Assert.NotNull(document.content);
+            Assert.True(document.contentType == "text/html");
         }
 
         [Fact]
