@@ -291,7 +291,7 @@ namespace Float.TinCan.LocalLRSServer
                 var bytes = new byte[request.ContentLength64];
                 request.InputStream.Read(bytes, 0, (int)request.ContentLength64);
                 profileDocument.content = bytes;
-                profileDocument.contentType = request.ContentEncoding.ToString();
+                profileDocument.contentType = request.ContentType;
 
                 RaiseAgentProfileDocumentEvent(new AgentProfileDocumentEventArgs(profileDocument));
             }
