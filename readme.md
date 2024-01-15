@@ -4,6 +4,10 @@ A local LRS server for xAPI.
 
 ## Building
 
+First you must restore the nuget libraries
+
+     dotnet restore
+
 This project can be built using [Visual Studio for Mac](https://visualstudio.microsoft.com/vs/mac/) or [Cake](https://cakebuild.net/). It is recommended that you build this project by invoking the bootstrap script:
 
     ./build.sh
