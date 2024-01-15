@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2;net6.0;net7.0</TargetFrameworks>
     <AssemblyName>Float.TinCan.LocalLRSServer</AssemblyName>
     <AssemblyAuthor>Float</AssemblyAuthor>
     <AssemblyDescription>A local LRS server for xAPI.</AssemblyDescription>
@@ -11,6 +11,8 @@
     <Title>$(AssemblyName)</Title>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>9.0</LangVersion>
+    <ReleaseVersion>1.0.0</ReleaseVersion>
+    <Version></Version>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(SolutionDir)\stylecop.json" />
@@ -29,13 +31,13 @@
     <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Float.TinCan" Version="1.0.3.29" />
+    <PackageReference Include="Float.TinCan" Version="1.0.3.30" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="../readme.md" Pack="true" PackagePath="\"/>
+    <None Include="../readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
