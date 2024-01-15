@@ -21,7 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>  
-  <ItemGroup Condition="$(TargetFramework.StartsWith('netcoreapp'))">    
+  <ItemGroup Condition="$(TargetFramework.StartsWith('netcoreapp'))">
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -35,7 +35,7 @@
   <ItemGroup>
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-    <PackageReference Include="NunitXml.TestLogger" Version="3.0.117" />
+    <PackageReference Include="NunitXml.TestLogger" Version="3.0.131" />
     <PackageReference Include="Float.TinCan" Version="1.0.3.30" />
   </ItemGroup>
   <ItemGroup>
