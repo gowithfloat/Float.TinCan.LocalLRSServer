@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using TinCan;
 using TinCan.Documents;
 using Xunit;
@@ -15,6 +16,11 @@ namespace Float.TinCan.LocalLRSServer.Tests
         public string GetAccessConrolAllowOrigin()
         {
             return null;
+        }
+
+        public void AlterAgentProfileResponse(HttpListenerRequest request, ref HttpListenerResponse response, ref AgentProfileDocument profileDocument)
+        {
+            return;
         }
     }
 

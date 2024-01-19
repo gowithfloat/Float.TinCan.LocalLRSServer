@@ -43,11 +43,6 @@ namespace Float.TinCan.LocalLRSServer
         public event EventHandler<StatementEventArgs> StatementReceived;
 
         /// <summary>
-        /// Event to be raised when the local LRS receives agent profile document information.
-        /// </summary>
-        public event EventHandler<AgentProfileDocumentEventArgs> AgentProfileDocumentReceived;
-
-        /// <summary>
         /// Gets or sets delegate method for State Get requests.
         /// </summary>
         /// <value>The delegate method for state get requests.</value>
@@ -247,66 +242,85 @@ namespace Float.TinCan.LocalLRSServer
         /// <param name="response">The HTTP response, which will get a No Content response.</param>
         void HandleAgentProfileRequest(HttpListenerRequest request, HttpListenerResponse response)
         {
-            var method = new HttpMethod(request.HttpMethod);
+            var method = new HttpMethod(request.HttpMethod).ToString();
             var profileIdString = request.QueryString["profileId"];
             AgentProfileDocument profileDocument = null;
-
-            if (method == HttpMethod.Get)
+            try
             {
-                if (string.IsNullOrWhiteSpace(profileIdString))
+                switch (method)
                 {
-                    // todo: return all available IDs
+                    case string m when HttpMethod.Get.ToString() == method:
+                        if (string.IsNullOrWhiteSpace(profileIdString))
+                        {
+                            // todo: return all available IDs
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
-                    throw new NotImplementedException("GET requests for all documents are not yet implemented");
+                            throw new NotImplementedException("GET requests for all documents are not yet implemented");
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
-                }
+                        }
 
-                if (serverDelegate != null)
-                {
-                    profileDocument = serverDelegate.AgentProfileDocumentForProfileId(profileIdString);
-                }
-            }
-            else if (method == HttpMethod.Delete)
-            {
-                // todo: implement delete requests
+                        if (serverDelegate != null)
+                        {
+                            profileDocument = serverDelegate.AgentProfileDocumentForProfileId(profileIdString);
+                        }
+
+                        WriteToStream(response, profileDocument.content, ContentType.Json, HttpStatusCode.OK);
+                        return;
+                    case string m when HttpMethod.Post.ToString() == method:
+                    case string m1 when HttpMethod.Put.ToString() == method:
+                        profileDocument = new AgentProfileDocument
+                        {
+                            id = WebUtility.UrlDecode(profileIdString),
+                        };
+
+                        var agentString = WebUtility.UrlDecode(request.QueryString["agent"]);
+
+                        if (agentString != null)
+                        {
+                            profileDocument.agent = new Agent(new StringOfJSON(agentString));
+                        }
+
+                        Encoding encoding = request.ContentEncoding;
+                        var bytes = new byte[request.ContentLength64];
+                        request.InputStream.Read(bytes, 0, (int)request.ContentLength64);
+                        profileDocument.content = bytes;
+                        profileDocument.contentType = request.ContentType;
+
+                        if (serverDelegate != null)
+                        {
+                            serverDelegate.AlterAgentProfileResponse(request, ref response, ref profileDocument);
+                            WriteToStream(response, contentBytes: null, ContentType.Json, HttpStatusCode.NoContent);
+                        }
+                        else
+                        {
+                            SendResponse(response, HttpStatusCode.NoContent);
+                        }
+
+                        return;
+                    case string m when HttpMethod.Delete.ToString() == method:
+                        if (serverDelegate != null)
+                        {
+                            serverDelegate.AlterAgentProfileResponse(request, ref response, ref profileDocument);
+                            WriteToStream(response, contentBytes: null, ContentType.Json, HttpStatusCode.NoContent);
+                        }
+                        else
+                        {
+                            // todo: implement delete requests
 #pragma warning disable CA1303 // Do not pass literals as localized parameters
-                throw new NotImplementedException("DELETE requests are not yet implemented");
+                            throw new NotImplementedException("DELETE requests are not yet implemented");
 #pragma warning restore CA1303 // Do not pass literals as localized parameters
-            }
-            else if (method == HttpMethod.Put || method == HttpMethod.Post)
-            {
-                profileDocument = new AgentProfileDocument
-                {
-                    id = WebUtility.UrlDecode(profileIdString),
-                };
+                        }
 
-                var agentString = WebUtility.UrlDecode(request.QueryString["agent"]);
-
-                if (agentString != null)
-                {
-                    profileDocument.agent = new Agent(new StringOfJSON(agentString));
+                        return;
+                    default:
+                        throw new InvalidOperationException($"Only GET, DELETE, PUT, and POST are supported for {nameof(HandleAgentProfileRequest)}. Received {method}");
                 }
-
-                Encoding encoding = request.ContentEncoding;
-                var bytes = new byte[request.ContentLength64];
-                request.InputStream.Read(bytes, 0, (int)request.ContentLength64);
-                profileDocument.content = bytes;
-                profileDocument.contentType = request.ContentType;
-
-                RaiseAgentProfileDocumentEvent(new AgentProfileDocumentEventArgs(profileDocument));
-            }
-            else
-            {
-                throw new InvalidOperationException($"Only GET, DELETE, PUT, and POST are supported for {nameof(HandleAgentProfileRequest)}. Received {method}");
             }
 
-            if (method == HttpMethod.Put || method == HttpMethod.Post || method == HttpMethod.Delete)
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch
+#pragma warning restore CA1031 // Do not catch general exception types
             {
-                SendResponse(response, HttpStatusCode.NoContent);
-            }
-            else
-            {
-                WriteToStream(response, profileDocument.content, ContentType.Json, HttpStatusCode.OK);
+                SendResponse(response, HttpStatusCode.BadRequest);
             }
         }
 
@@ -317,15 +331,6 @@ namespace Float.TinCan.LocalLRSServer
         void RaiseStatementEvent(StatementEventArgs args)
         {
             StatementReceived?.Invoke(this, args);
-        }
-
-        /// <summary>
-        /// Method to handle agent profile document events.
-        /// </summary>
-        /// <param name="args">Agent profile document event arguments, containing document data.</param>
-        void RaiseAgentProfileDocumentEvent(AgentProfileDocumentEventArgs args)
-        {
-            AgentProfileDocumentReceived?.Invoke(this, args);
         }
     }
 }
