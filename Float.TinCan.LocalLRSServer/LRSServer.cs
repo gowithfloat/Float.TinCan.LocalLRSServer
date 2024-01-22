@@ -43,6 +43,11 @@ namespace Float.TinCan.LocalLRSServer
         public event EventHandler<StatementEventArgs> StatementReceived;
 
         /// <summary>
+        /// Event to be raised when the local LRS receives agent profile document information.
+        /// </summary>
+        public event EventHandler<AgentProfileDocumentEventArgs> AgentProfileDocumentReceived;
+
+        /// <summary>
         /// Gets or sets delegate method for State Get requests.
         /// </summary>
         /// <value>The delegate method for state get requests.</value>
@@ -284,23 +289,20 @@ namespace Float.TinCan.LocalLRSServer
                         request.InputStream.Read(bytes, 0, (int)request.ContentLength64);
                         profileDocument.content = bytes;
                         profileDocument.contentType = request.ContentType;
+                        RaiseAgentProfileDocumentEvent(new AgentProfileDocumentEventArgs(profileDocument));
 
                         if (serverDelegate != null)
                         {
                             serverDelegate.AlterAgentProfileResponse(request, ref response, ref profileDocument);
-                            WriteToStream(response, contentBytes: null, ContentType.Json, HttpStatusCode.NoContent);
-                        }
-                        else
-                        {
-                            SendResponse(response, HttpStatusCode.NoContent);
                         }
 
+                        SendResponse(response, HttpStatusCode.NoContent);
                         return;
                     case string m when HttpMethod.Delete.ToString() == method:
                         if (serverDelegate != null)
                         {
                             serverDelegate.AlterAgentProfileResponse(request, ref response, ref profileDocument);
-                            WriteToStream(response, contentBytes: null, ContentType.Json, HttpStatusCode.NoContent);
+                            SendResponse(response, HttpStatusCode.NoContent);
                         }
                         else
                         {
@@ -331,6 +333,15 @@ namespace Float.TinCan.LocalLRSServer
         void RaiseStatementEvent(StatementEventArgs args)
         {
             StatementReceived?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Method to handle agent profile document events.
+        /// </summary>
+        /// <param name="args">Agent profile document event arguments, containing document data.</param>
+        void RaiseAgentProfileDocumentEvent(AgentProfileDocumentEventArgs args)
+        {
+            AgentProfileDocumentReceived?.Invoke(this, args);
         }
     }
 }
