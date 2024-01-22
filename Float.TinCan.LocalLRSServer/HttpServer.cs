@@ -188,13 +188,10 @@ namespace Float.TinCan.LocalLRSServer
                 throw new ArgumentNullException(nameof(response));
             }
 
-            if (contentBytes == null)
+            if (contentBytes == null && statusCode != HttpStatusCode.NoContent)
             {
                 throw new ArgumentNullException(nameof(contentBytes));
             }
-
-            var contentLength = contentBytes.Length;
-            response.ContentLength64 = contentLength;
 
             if (contentType != null)
             {
@@ -206,7 +203,13 @@ namespace Float.TinCan.LocalLRSServer
                 response.StatusCode = (int)statusCode;
             }
 
-            response.OutputStream.Write(contentBytes, 0, contentLength);
+            if (contentBytes != null)
+            {
+                var contentLength = contentBytes.Length;
+                response.ContentLength64 = contentLength;
+                response.OutputStream.Write(contentBytes, 0, contentLength);
+            }
+
             response.OutputStream.Close();
         }
 

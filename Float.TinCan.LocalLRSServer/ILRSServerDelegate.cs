@@ -1,4 +1,5 @@
-﻿using TinCan.Documents;
+﻿using System.Net;
+using TinCan.Documents;
 
 namespace Float.TinCan.LocalLRSServer
 {
@@ -20,5 +21,13 @@ namespace Float.TinCan.LocalLRSServer
         /// </summary>
         /// <returns>The header value for Access-Control-Allow-Origin.</returns>
         string GetAccessConrolAllowOrigin();
+
+        /// <summary>
+        /// Delegate method to alter a response for AgentProfile.
+        /// </summary>
+        /// <param name="request">The HTTP request to get query params from.</param>
+        /// <param name="response">The current HTTP response.</param>
+        /// <param name="profileDocument">The profile document.</param>
+        public void AlterAgentProfileResponse(HttpListenerRequest request, ref HttpListenerResponse response, ref AgentProfileDocument profileDocument);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TinCan;
@@ -12,6 +13,7 @@ namespace Float.TinCan.LocalLRSServer.Tests
         class StubServerDelegate : ILRSServerDelegate
         {
             readonly Agent agent;
+            AgentProfileDocument tempProfileDocument;
 
             internal StubServerDelegate(Agent agent)
             {
@@ -20,6 +22,11 @@ namespace Float.TinCan.LocalLRSServer.Tests
 
             public AgentProfileDocument AgentProfileDocumentForProfileId(string profileId)
             {
+                if (tempProfileDocument != null)
+                {
+                    return tempProfileDocument;
+                }
+
                 return new AgentProfileDocument
                 {
                     agent = agent,
@@ -31,6 +38,23 @@ namespace Float.TinCan.LocalLRSServer.Tests
             public string GetAccessConrolAllowOrigin()
             {
                 return null;
+            }
+
+            public void AlterAgentProfileResponse(HttpListenerRequest request, ref HttpListenerResponse response, ref AgentProfileDocument profileDocument)
+            {
+                if (request.HttpMethod.ToString() != "GET")
+                {
+                    tempProfileDocument = new AgentProfileDocument
+                    {
+                        agent = profileDocument.agent,
+                        content = profileDocument.id != "testing_save" ? profileDocument.content : Encoding.UTF8.GetBytes("this is transformed test content"),
+                        contentType = profileDocument.contentType,
+                        id = profileDocument.id,
+                        timestamp = profileDocument.timestamp,
+                        etag = profileDocument.etag
+                    };
+                }
+                return;
             }
         }
 
@@ -64,38 +88,38 @@ namespace Float.TinCan.LocalLRSServer.Tests
         [Fact]
         public async Task TestCanSaveAgentProfile()
         {
-            var didReceive = false;
-            var document = new AgentProfileDocument();
-
-            localLRS.AgentProfileDocumentReceived += (lrs, args) =>
-            {
-                didReceive = true;
-                document = args.AgentProfileDocument;
-            };
-
             var doc = new AgentProfileDocument
             {
-                id = "test_id",
+                id = "testing_save",
                 timestamp = new DateTime(),
                 contentType = "text/html",
                 content = Encoding.UTF8.GetBytes("this is test content"),
                 agent = testAgent
             };
 
-            var response = await remoteLRS.SaveAgentProfile(doc);
+            var saveResponse = await remoteLRS.SaveAgentProfile(doc);
+            Assert.True(saveResponse.success);
 
+            var response = await remoteLRS.RetrieveAgentProfile("test_id", testAgent);
+
+            var result = Encoding.UTF8.GetString(response.content.content);
             Assert.NotNull(response);
             Assert.True(response.success);
-            Assert.True(didReceive);
-            Assert.Equal("test_id", document.id);
 
             // BUG: remoteLRS.SaveAgentProfile
             // does not decode mbox so
             // we cannot test for agent equality
-            Assert.NotNull(document.agent);
-            Assert.True(document.agent.account.name == "Example.com");
-            Assert.NotNull(document.content);
-            Assert.True(document.contentType == "text/html");
+            Assert.NotNull(response);
+            Assert.NotNull(response.content);
+            Assert.Null(response.errMsg);
+            Assert.Null(response.Error);
+            Assert.Null(response.httpException);
+            Assert.True(response.success);
+            Assert.Equal("application/json", response.content.contentType);
+            Assert.Null(response.content.etag);
+            Assert.Null(response.content.id);
+            Assert.NotEmpty(response.content.content);
+            Assert.Equal("this is transformed test content", result);
         }
 
         [Fact]
@@ -131,7 +155,7 @@ namespace Float.TinCan.LocalLRSServer.Tests
             // Assert.Equal(testAgent, response.content.agent);
             // Assert.Equal("test_id", response.content.id);
 
-            Assert.Equal("this is a test string", result);
+            Assert.Equal("this is test content", result);
         }
 
         ~TestAgentProfile()
